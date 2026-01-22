@@ -159,32 +159,37 @@
     }
 
     // Trailer functionality
-const trailerBtn = document.getElementById('trailerBtn');
-const trailerModal = document.getElementById('trailerModal');
-const trailerIframe = document.getElementById('trailerIframe');
-const closeTrailer = document.getElementById('closeTrailer');
+    const trailerBtn = document.getElementById('trailerBtn');
+    const trailerModal = document.getElementById('trailerModal');
+    const trailerIframe = document.getElementById('trailerIframe');
+    const closeTrailer = document.getElementById('closeTrailer');
 
-if (movie && movie.trailer) {
-  trailerBtn.addEventListener('click', () => {
-    trailerIframe.src = movie.trailer + '?autoplay=1';
-    trailerModal.classList.remove('hidden');
-  });
-}
+    if (movie && movie.trailer) {
+      trailerBtn.addEventListener('click', () => {
+        trailerIframe.src = movie.trailer + '?autoplay=1';
+        trailerModal.classList.remove('hidden');
+      });
+    }
 
-// close modal
-closeTrailer.addEventListener('click', () => {
-  trailerModal.classList.add('hidden');
-  trailerIframe.src = ''; // stop video
-});
+    // close modal
+    closeTrailer.addEventListener('click', () => {
+      trailerModal.classList.add('hidden');
+      trailerIframe.src = ''; // stop video
+    });
 
-// also close if clicked outside video
-trailerModal.addEventListener('click', e => {
-  if (e.target === trailerModal) {
-    trailerModal.classList.add('hidden');
-    trailerIframe.src = '';
-  }
-});
+    // also close if clicked outside video
+    trailerModal.addEventListener('click', e => {
+      if (e.target === trailerModal) {
+        trailerModal.classList.add('hidden');
+        trailerIframe.src = '';
+      }
+    });
 
+  </script>
+  <script>
+    if (location.pathname.endsWith('movie-details.html') && !location.search) {
+      window.location.href = 'index.html';
+    }
   </script>
 </body>
 

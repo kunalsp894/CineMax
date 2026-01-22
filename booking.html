@@ -40,9 +40,7 @@
 
           <div>
             <h3 class="mb-2 font-semibold">Select Time</h3>
-            <div id="times" class="flex space-x-2 flex-wrap">
-              <!-- will be populated dynamically if movie provided -->
-            </div>
+            <div id="times" class="flex space-x-2 flex-wrap"></div>
           </div>
 
           <div>
@@ -51,8 +49,8 @@
               <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="1">1</button>
               <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="2">2</button>
               <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="3">3</button>
-              <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="2">4</button>
-              <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="3">5</button>
+              <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="4">4</button>
+              <button class="ticket-btn bg-gray-700 hover:bg-primary-600 px-3 py-2 rounded" data-tickets="5">5</button>
             </div>
           </div>
         </div>
@@ -63,7 +61,6 @@
       <div class="bg-gray-800 p-6 rounded-lg">
         <div id="seatGrid" class="grid grid-cols-10 gap-2 justify-items-center mb-6"></div>
 
-        <!-- Legend -->
         <div class="flex justify-center space-x-6 text-sm">
           <div class="flex items-center space-x-2">
             <div class="w-4 h-4 bg-gray-700 rounded"></div><span>Available</span>
@@ -82,11 +79,10 @@
         <h3 class="text-xl font-semibold mb-3">Booking Summary</h3>
         <div class="space-y-2">
           <p><strong>Movie:</strong> <span id="summaryMovie">-</span></p>
-          <p><strong>Date & Time:</strong> <span id="summaryDate">Mon, 25 Sept</span> - <span id="summaryTime">1:45
-              PM</span></p>
+          <p><strong>Date & Time:</strong> <span id="summaryDate">-</span> - <span id="summaryTime">-</span></p>
           <p><strong>Seats:</strong> <span id="summarySeats">None</span></p>
           <p><strong>Tickets:</strong> <span id="summaryTickets">1</span> × ₹320.00</p>
-          <p class="font-bold text-white"><strong>Total:</strong> ₹<span id="summaryTotal">13.50</span></p>
+          <p class="font-bold text-white"><strong>Total:</strong> ₹<span id="summaryTotal">0.00</span></p>
         </div>
 
         <button id="proceedPayment" class="mt-4 w-full bg-primary-600 px-6 py-3 rounded-lg text-center text-lg">
@@ -99,13 +95,11 @@
   <div id="footer"></div>
   <script src="js/include.js"></script>
 
-  <!-- Toast notification -->
   <div id="toast"
     class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50">
   </div>
-  <!-- Booking Script (integrated with movie data) -->
+
   <script>
-    // helpers
     function q(name) { return new URLSearchParams(location.search).get(name); }
 
     const seatGrid = document.getElementById("seatGrid");
@@ -113,21 +107,17 @@
     const cols = 10;
     const seatPrice = 320;
 
-    // state
     let selectedSeats = [];
     let selectedDate = "Mon, 25 Sept";
     let selectedTime = "1:45 PM";
     let ticketCount = 1;
 
-    // Movie params
     const movieId = q('id');
     const initialTime = q('time');
 
-    // Fill movie in summary if provided
     const summaryMovieEl = document.getElementById('summaryMovie');
     if (movieId && window.MOVIES && window.MOVIES[movieId]) {
       summaryMovieEl.textContent = window.MOVIES[movieId].title;
-      // Populate times from movie
       const timesContainer = document.getElementById('times');
       timesContainer.innerHTML = '';
       (window.MOVIES[movieId].showtimes || []).forEach((t, i) => {
@@ -142,57 +132,40 @@
           updateSummary();
         });
         timesContainer.appendChild(btn);
-        // default selection
-        if (initialTime && initialTime === t) {
-          setTimeout(() => btn.click(), 30);
-        } else if (!initialTime && i === 0) {
-          setTimeout(() => btn.click(), 30);
-        }
+        if (initialTime && initialTime === t) setTimeout(() => btn.click(), 30);
+        else if (!initialTime && i === 0) setTimeout(() => btn.click(), 30);
       });
     } else {
-      summaryMovieEl.textContent = "Inception"; // fallback
-      // if no movie, keep static time buttons (from HTML fallback) - fill them
-      document.querySelectorAll(".time-btn").forEach(b => b.addEventListener("click", () => {
-        document.querySelectorAll('.time-btn').forEach(bb => bb.classList.remove('bg-primary-600'));
-        b.classList.add('bg-primary-600');
-        selectedTime = b.dataset.time;
-        updateSummary();
-      }));
+      summaryMovieEl.textContent = "Inception";
     }
 
     // Generate seats
     for (let r of rows) {
       for (let c = 1; c <= cols; c++) {
+        const seat = r + c;
         const btn = document.createElement("button");
-        btn.textContent = r + c;
+        btn.textContent = seat;
         btn.className = "seat seat-custom bg-gray-700 rounded";
-        btn.dataset.seat = r + c;
+        btn.dataset.seat = seat;
 
-        // mark some as booked (example)
-        if (["B4", "D6", "F5"].includes(r + c.toString())) {
+        if (["B4", "D6", "F5"].includes(seat)) {
           btn.className = "seat seat-custom bg-gray-600 rounded cursor-not-allowed";
           btn.disabled = true;
         } else {
           btn.addEventListener("click", () => {
-            const seat = btn.dataset.seat;
-
             if (selectedSeats.includes(seat)) {
-              // Deselect seat
               selectedSeats = selectedSeats.filter(s => s !== seat);
               btn.classList.remove('bg-primary-600');
               btn.classList.add('bg-gray-700');
             } else {
-              // Check ticket limit
               if (selectedSeats.length >= ticketCount) {
                 showToast(`You can only select ${ticketCount} seat(s)`);
-                return; // prevent selecting more
+                return;
               }
-              // Select the new seat
               selectedSeats.push(seat);
               btn.classList.remove('bg-gray-700');
               btn.classList.add('bg-primary-600');
             }
-
             updateSummary();
           });
         }
@@ -200,7 +173,6 @@
       }
     }
 
-    // Date buttons
     document.querySelectorAll(".date-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("bg-primary-600"));
@@ -210,7 +182,6 @@
       });
     });
 
-    // Ticket buttons
     document.querySelectorAll(".ticket-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".ticket-btn").forEach(b => b.classList.remove("bg-primary-600"));
@@ -220,51 +191,49 @@
       });
     });
 
-    // if there are time buttons pre-rendered in DOM (fallback), hook them
-    document.querySelectorAll(".time-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".time-btn").forEach(b => b.classList.remove("bg-primary-600"));
-        btn.classList.add("bg-primary-600");
-        selectedTime = btn.dataset.time;
-        updateSummary();
-      });
-    });
-
     function updateSummary() {
       document.getElementById("summaryDate").textContent = selectedDate;
       document.getElementById("summaryTime").textContent = selectedTime;
       document.getElementById("summarySeats").textContent = selectedSeats.length ? selectedSeats.join(", ") : "None";
       document.getElementById("summaryTickets").textContent = ticketCount;
-      const total = (selectedSeats.length || ticketCount) * seatPrice; 
+      const total = (selectedSeats.length || ticketCount) * seatPrice;
       document.getElementById("summaryTotal").textContent = total.toFixed(2);
     }
 
-    // initial UI state
     document.querySelector('.date-btn')?.click();
     document.querySelector('.ticket-btn')?.click();
     updateSummary();
 
-    // Proceed to Payment button (serializes selection into query)
     document.getElementById('proceedPayment').addEventListener('click', () => {
+      if (selectedSeats.length < ticketCount) {
+        showToast(`Please select ${ticketCount} seat(s)`);
+        return;
+      }
       const seatsParam = encodeURIComponent(selectedSeats.join(','));
       const movieParam = encodeURIComponent(movieId || '');
       const timeParam = encodeURIComponent(selectedTime || '');
+      const dateParam = encodeURIComponent(selectedDate || '');
       const total = encodeURIComponent(document.getElementById("summaryTotal").textContent || '');
-      const url = `payment.html?id=${movieParam}&time=${timeParam}&seats=${seatsParam}&total=${total}`;
+      const url = `payment.html?id=${movieParam}&date=${dateParam}&time=${timeParam}&seats=${seatsParam}&total=${total}`;
       window.location.href = url;
     });
+
     function showToast(message) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.classList.remove('opacity-0');
       toast.classList.add('opacity-100');
-
       setTimeout(() => {
         toast.classList.remove('opacity-100');
         toast.classList.add('opacity-0');
-      }, 2000); // visible for 2 seconds
+      }, 2000);
     }
-
+  </script>
+  <script>
+    // Redirect to index.html if opened directly (no referrer and no query params)
+    if (location.pathname.endsWith('booking.html') && !location.search) {
+      window.location.href = 'index.html';
+    }
   </script>
 </body>
 

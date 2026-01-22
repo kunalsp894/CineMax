@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,35 +31,35 @@
         <div>
           <label class="block mb-2 font-semibold" for="firstName">First Name</label>
           <input type="text" id="firstName" placeholder="Enter first name"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600"/>
+            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600" />
         </div>
 
         <!-- Last Name -->
         <div>
           <label class="block mb-2 font-semibold" for="lastName">Last Name</label>
           <input type="text" id="lastName" placeholder="Enter last name"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600"/>
+            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600" />
         </div>
 
         <!-- Mobile Number -->
         <div>
           <label class="block mb-2 font-semibold" for="mobile">Mobile Number</label>
           <input type="tel" id="mobile" placeholder="Enter mobile number"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600"/>
+            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600" />
         </div>
 
         <!-- Email -->
         <div>
           <label class="block mb-2 font-semibold" for="email">Email ID</label>
           <input type="email" id="email" placeholder="Enter email"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600"/>
+            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600" />
         </div>
 
         <!-- City -->
         <div>
           <label class="block mb-2 font-semibold" for="city">City</label>
           <input type="text" id="city" placeholder="Enter city"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600"/>
+            class="w-full px-4 py-2 rounded-lg bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-600" />
         </div>
 
         <!-- Submit -->
@@ -79,21 +80,28 @@
   <script src="js/include.js"></script>
 
   <script>
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    const user = {
-      firstName: document.getElementById("firstName").value.trim(),
-      lastName: document.getElementById("lastName").value.trim(),
-      mobile: document.getElementById("mobile").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      city: document.getElementById("city").value.trim(),
-    };
+      const user = {
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        mobile: document.getElementById("mobile").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        city: document.getElementById("city").value.trim(),
+      };
 
-    localStorage.setItem("user", JSON.stringify(user));
-    alert("Welcome, " + user.firstName + "!");
-    window.location.href = "index.html";
-  });
-</script>
+      localStorage.setItem("user", JSON.stringify(user));
+      alert("Welcome, " + user.firstName + "!");
+      window.location.href = "index.html";
+    });
+  </script>
+  <script>
+    if (location.pathname.endsWith('login.html') && !location.search) {
+      window.location.href = 'index.html';
+    }
+  </script>
+
 </body>
+
 </html>
